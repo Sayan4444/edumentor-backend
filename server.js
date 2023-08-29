@@ -28,16 +28,14 @@ io.on('connection', (socket) => {
     })
 
     socket.on("send_message", (messageObj) => {
-        const { chat, sender } = messageObj;
-        chat.users.forEach((user) => {
-            if (user._id === sender._id) return;
-            socket.in(user._id).emit("receive_message", messageObj)
+        // console.log(messageObj);
+        const { teacher } = messageObj;
+        teacher.subscribers.forEach((studentId) => {
+            if (studentId === messageObj.sender._id) return;
+            socket.in(studentId).emit("receive_message", messageObj)
         })
     });
 
-    // socket.off("setup", () => {
-    //     socket.leave(userId);
-    // });
 })
 const PORT = process.env.PORT;
 server.listen(PORT, () => console.log('SERVER CREATED'))
